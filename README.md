@@ -15,10 +15,13 @@
 * pynput for keylogger
 * opencv-python (know as cv2) for camera streaming
 * numpy for camera streaming
+* pygame for camera receiving
 
 ## How to install :
 
 ``pip3 install requirements.txt``
+
+on windows you can just launch victim_requirements.bat and/or attacker_requirements.bat which download the requirements
 
 watch out requirements are differents for attacker and victim
 ## How to run :
@@ -26,7 +29,6 @@ watch out requirements are differents for attacker and victim
 on the victim computer :
 ``python3 victim.py``
 
-on windows you can just launch run.bat which download the requirements and run the virus
 
 on the attacker computer:
 ``python3 attacker.py``
@@ -58,7 +60,7 @@ optional arguments:
   ```py
 usage: attacker.py [-h] [--host HOST] [--port PORT] [--shell SHELL] [--camera CAMERA] [--screen SCREEN]
 
-Tiz Virus attacker
+Tiz Virus Attacker
 
 optional arguments:
   -h, --help       show this help message and exit
@@ -71,7 +73,7 @@ optional arguments:
 
 
   ## Futur improvements :
-  * concat every attacker files in one file
-  * any idea ?
+  * fix revershell trouble
+  * add replicant fonction
 
   # TIZ
