@@ -15,6 +15,7 @@ This virus can do :
 
 ## How to install :
 ``pip3 install requirements.txt``
+watch out requirements are differents for attack and victim
 ## How to run :
 ``python3 virus.py``
 on windows you can just launch run.bat which download the requirements and run the virus
