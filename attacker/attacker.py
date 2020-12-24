@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Dec 23 2020
+
+@autor Tiz
+"""
+
 from __future__ import division
 import numpy as np
 import socket, argparse, sys, threading
