@@ -11,10 +11,12 @@ This virus can do :
 * mss for screen streaming
 * pynput for keylogger
 * opencv-python (know as cv2) for camera streaming
+* numpy for camera streaming
 
 ## How to install :
 ``pip3 install requirements.txt``
-## how to run :
+## How to run :
+``python3 virus.py``
 on windows you can just launch run.bat which download the requirements and run the virus
 
 ## Options :

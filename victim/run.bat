@@ -1,2 +1,2 @@
-pip3 install mss pynput opencv-python
+pip3 install mss pynput opencv-python numpy
 python3 virus.py

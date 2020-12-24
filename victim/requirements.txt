@@ -1,3 +1,4 @@
 mss
 pynput
 opencv-python
+numpy
