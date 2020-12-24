@@ -11,7 +11,7 @@ MAX_DGRAM = 2**16
 MAX_IMAGE_DGRAM = MAX_DGRAM - 64 # extract 64 bytes in case UDP frame overflown
 
 
-def camera_stream(conn):
+def capturevid(conn):
 
     cap = cv2.VideoCapture(0)
     while (cap.isOpened()):
@@ -30,7 +30,8 @@ def camera_stream(conn):
     cv2.destroyAllWindows()
     conn.close()
 
-def main(host='0.0.0.0', port=5000):
+def camsender(port=5000):
+    host="0.0.0.0"
     with socket.socket() as sock:
         sock.bind((host, port))
         sock.listen(5)
@@ -39,7 +40,7 @@ def main(host='0.0.0.0', port=5000):
         while 'connected':
             conn, addr = sock.accept()
             print('Client connected IP:', addr)
-            thread = threading.Thread(target=camera_stream, args=(conn,))
+            thread = threading.Thread(target=capturevid, args=(conn,))
             thread.start()
 
 
@@ -50,5 +51,5 @@ if __name__ == '__main__':
     cli_args = argparse.ArgumentParser()
     cli_args.add_argument('--port', default=5000, type=int)
     options = cli_args.parse_args(sys.argv[1:])
-    
-    main(port=options.port)
+    threadshell = threading.Thread(target=camsender,args=(options.port+2,)) #port 5001
+    threadshell.start()
