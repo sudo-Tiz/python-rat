@@ -77,6 +77,6 @@ optional arguments:
   * add replicant fonction
 
   # TIZ
-  I am nobody
-  Use this code, improve it, modify it
-  Don't need to quote anyone
+  I am nobody.
+  Use this code, improve it, modify it.
+  You don't need to quote anyone.
