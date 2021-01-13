@@ -5,6 +5,7 @@
 # This virus can do :
 * reverse shell
 * keylogger
+* microphone recorder
 * wifis password stealer
 * screen sharing
 * camera sharing
@@ -16,6 +17,7 @@
 * opencv-python (know as cv2) for camera streaming
 * numpy for camera streaming
 * pygame for camera receiving
+* pyaudio for microphone recording
 
 ## How to install :
 
@@ -38,16 +40,17 @@ on the attacker computer:
 
 Victim side:
 ```py
-usage: victim.py [-h] [--host HOST] [--port PORT] [--keylog KEYLOG] [--wifi WIFI] [--shell SHELL]
-                [--camera CAMERA] [--screen SCREEN]
+usage: victim.py [-h] [--host HOST] [--port PORT] [--keylog KEYLOG] [--micro MICRO] [--wifi WIFI] [--shell SHELL]
+                 [--camera CAMERA] [--screen SCREEN]
 
 Tiz Virus Victim
 
 optional arguments:
   -h, --help       show this help message and exit
   --host HOST      listening ip, default is '0.0.0.0', no need to change
-  --port PORT      default port is 5000, revershell = port, camera stream = port+1, screen stream =port+2
+  --port PORT      default port is 5000, revershell = port, camera stream = port+1, screen stream = port+2
   --keylog KEYLOG  keylog=t create a keylogger file / keylog=f don't create the file
+  --micro MICRO    micro=10 record the microphone during 10 sec and put it in a file / micro=0 don't record
   --wifi WIFI      wifi=t create a file with all wifis password / wifi=f don't create the file
   --shell SHELL    shell=t revershell on port (default = 5000) / shell=f don't revershell
   --camera CAMERA  camera=t stream camera on port+1 (default = 5001) / camera=f don't stream

@@ -1,1 +1,1 @@
-pip3 install mss pynput opencv-python numpy
+pip3 install mss pynput opencv-python numpy pyaudio
